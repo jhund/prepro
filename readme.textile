@@ -2,3 +2,5 @@ Prepro gives your Rails app presenters and processors to slim down both controll
 
 This is still a work in progress. I use it for production, however the API might change and it
 requires a lot more documentation.
+
+Requires Rails 3.1 or greater.
