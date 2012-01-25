@@ -1,0 +1,8 @@
+h1. How to cut a new version
+
+# after all changes are made
+# update the version in lib/version.rb, following semantic versioning
+# cd into prepro root dir
+# gem build prepro.gemspec
+# gem push prepro-x.x.x.gem
+# commit all changes to git
