@@ -75,9 +75,11 @@ module Prepro
       raise "Implement me in concrete processor"
     end
   
-    # Override this in your concrete processors with your own permission handling code.
+    # Raises an AuthorizationError if actor doesn't have permission
+    # @param[Boolean] has_permission indicates whether actor has permission
+    # @return[Nil] nil, or raises AuthorizationError
     def self.enforce_permissions(has_permission)
-      raise "Implement me in concrete processor"
+      raise Prepro::AuthorizationError  unless has_permission
     end
   
     def self.make_processable(model_instance, processor_attrs)
