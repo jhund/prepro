@@ -10,10 +10,14 @@ module Prepro
     # @param[User, AnonymousUser] actor the actor who will view the model
     # @param[ActionView::Base] view_context An instance of a view class. The default view class is
     #     ActionView::Base
-    # @param[Hash, optional] options
+    # @param[Hash, optional] options:
+    #     * :enforce_permissions - default true
     # @return[DecoratedModel, Array<DecoratedModel>] a model or collection thereof, decorated for
     #     presentation
     def self.new(id_model_hash_collection, actor, view_context, options = {})
+      options = {
+        :enforce_permissions => true
+      }.merge(options)
       case id_model_hash_collection
       when Array, ActiveRecord::Relation
         present_collection(id_model_hash_collection, actor, view_context, options)
@@ -21,7 +25,7 @@ module Prepro
         present_single(id_model_hash_collection, actor, view_context, options)
       end
     end
-  
+
     # Alias the basic access methods, so that they can be called for classes further down the
     # inheritance chain, after another class overrode the method
     # Aliasing class methods can only be done in the singleton method
@@ -38,12 +42,16 @@ module Prepro
     # @param[Hash, optional] options
     # @return[Array<DecoratedModel>] An array of models, each decorated for presentation
     def self.present_collection(model_instances, actor, view_context, options = {})
-      presenter_attrs = OpenStruct.new(:actor => actor, :view_context => view_context, :options => options)
-      enforce_permissions(model_class.listable_by?(actor))
+      presenter_attrs = OpenStruct.new(
+        :actor => actor, :view_context => view_context, :options => options
+      )
+      if options[:enforce_permissions]
+        enforce_permissions(model_class.listable_by?(actor))
+      end
       model_instances.each { |e| make_presentable!(e, presenter_attrs) }
       model_instances
     end
-  
+
     # Prepares a model instance for presentation
     # @param[Integer, String(number), Model] id_hash_model id of model, attributes for model, or model
     #     to present
@@ -55,11 +63,13 @@ module Prepro
     def self.present_single(id_hash_model, actor, view_context, options = {})
       presenter_attrs = OpenStruct.new(:actor => actor, :view_context => view_context, :options => options)
       model_instance = load_model_instance(id_hash_model)
-      enforce_permissions(model_instance.viewable_by?(actor))
+      if options[:enforce_permissions]
+        enforce_permissions(model_instance.viewable_by?(actor))
+      end
       make_presentable!(model_instance, presenter_attrs)
       model_instance
     end
-  
+
     # Returns a model_instance, based on given id_hash_model
     def self.load_model_instance(id_hash_model)
       case id_hash_model
@@ -76,24 +86,24 @@ module Prepro
     def self.model_class
       raise "Implement me in concrete presenter"
     end
-  
+
     # Raises an AuthorizationError if actor doesn't have permission
     # @param[Boolean] has_permission indicates whether actor has permission
     # @return[Nil] nil, or raises AuthorizationError
     def self.enforce_permissions(has_permission)
       raise Prepro::AuthorizationError  unless has_permission
     end
-  
+
     module DecoratorMixin
-    
+
       def presenter_attrs=(the_presenter_attrs)
         @presenter_attrs = the_presenter_attrs
       end
-    
+
       def presenter_attrs
         @presenter_attrs
       end
-    
+
       # Formats a_datetime
       # @param[DateTime, Nil] a_datetime the datetime to format
       # @param[Symbol] output_format the format to be applied: :distance_in_words,
@@ -169,8 +179,8 @@ module Prepro
       def indicate_blank
         presenter_attrs.view_context.content_tag :span, "None Given", :class => 'label'
       end
-    
+
     end
-  
+
   end
 end
