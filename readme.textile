@@ -4,3 +4,40 @@ This is still a work in progress. I use it for production, however the API might
 requires a lot more documentation.
 
 Requires Rails 3.1 or greater.
+
+
+h1. How Prepro fits into the Rails picture
+
+* Rails models, ActiveRecord based.
+* Prepro Presenters: wrapped around a Rails model to take care of data output. You would typically
+  use a presenter in the following controller actions: index, show, new, edit
+* Prepro Processors: wrapped around a Rails model to take care of data input.
+
+
+h2. What to put into Rails Models
+
+Try to encapsulate all but the simplest references to ActiveRecord in the model. Don't let AR spill
+out into your entire app. This will make testing a lot simpler.
+
+* Complex AR methods like composed AREL methods or scopes
+* Data manipulation
+* validation
+* delegation
+* conversion
+* getter and setter overrides for DB column based attributes
+
+h2. What to put into Presenters
+
+Anything that is related to data output and display.
+
+* Display related methods
+* output in alternative formats like PDF, CSV, ATOM
+* methods used for form population (e.g., Select options)
+
+h2. What to put into Processors
+
+Anything related to data input.
+
+* methods to create/update records from complex data, e.g., params hash. This is comparable to DCI
+  contexts.
+* form data processing
