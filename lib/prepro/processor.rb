@@ -24,7 +24,7 @@ module Prepro
         enforce_permissions(model_instance.creatable_by?(actor))
       end
       before_assign_attributes_on_create(model_instance, processor_attrs)
-      model_instance.assign_attributes(model_attrs, :as => options[:as])
+      model_instance.attributes = model_attrs
       before_save_on_create(model_instance, processor_attrs)
       success = model_instance.save
       [model_instance, success]
@@ -42,7 +42,7 @@ module Prepro
         enforce_permissions(model_instance.updatable_by?(actor))
       end
       before_assign_attributes_on_update(model_instance, processor_attrs)
-      model_instance.assign_attributes(model_attrs, :as => options[:as])
+      model_instance.attributes = model_attrs
       before_save_on_update(model_instance, processor_attrs)
       success = model_instance.save
       [model_instance, success]
