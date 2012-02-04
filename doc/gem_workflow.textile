@@ -3,8 +3,11 @@ h1. How to cut a new version
 # after all changes are made
 # update the version in lib/version.rb, following semantic versioning
 # cd into prepro root dir
-# gem build prepro.gemspec
+# build the gem
+  gem build prepro.gemspec
 # update Changelog
-# gem push prepro-x.x.x.gem
+# push the gem to rubygems.org
+  gem push prepro-x.x.x.gem
 # commit all changes to git
 # create a git tag for the new version
+  git tag '0.1.5'
