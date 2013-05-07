@@ -1,3 +1,9 @@
+h1. NOTE: I don't think the approach proposed here is a really good idea, based on trying out the ideas in production.
+
+Keeping the code here anyways since the Gems are published...
+
+----
+
 Prepro gives your Rails app presenters and processors to slim down both controllers and models.
 
 This is still a work in progress. I use it for production, however the API might change and it
